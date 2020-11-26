@@ -6,7 +6,7 @@ Index = {NewCell 0}
 % Add new Key in Store
 %=================
 fun {AddKeyToSAS}
-    {Cell.assign Index (@Index+1)}
+    Index := @Index + 1
     {Dictionary.put Store @Index equivalence(@Index)}
     @Index
 end
