@@ -13,7 +13,7 @@ proc {Execute ExecStack}
                     {Execute es(st: RemSemStack sas:XSAS)}
                 [] [var ident(X) S] then Key = {AddKeyToSAS} in
                     {Browse "Variable creation"}
-                    {Execute es(st: ss(s: S env: {AdjoinAt Env X Key})|RemSemStack sas)}
+                    {Execute es(st: ss(s: S env: {AdjoinAt Env X Key})|RemSemStack sas:XSAS)}
                 [] S1|S2 then 
                     % {Browse S1} 
                     {Execute es(st: ss(s:S1 env:Env)|ss(s:S2 env:Env)|RemSemStack sas:XSAS)}
