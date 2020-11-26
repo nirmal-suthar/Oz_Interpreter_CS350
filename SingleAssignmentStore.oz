@@ -1,5 +1,7 @@
-declare Store, Index
+declare Store
 Store = {Dictionary.new}
+
+declare Index
 Index = {NewCell 0}
 
 %==================
@@ -42,8 +44,8 @@ end
 % (1) Value corresponding to Key is [equivalence]
 %=================
 fun {BindValueToKeyInSAS Key Val}
-    Val = {Dictionary.get Store Key} in 
-    case Val
+    CurVal = {Dictionary.get Store Key} in 
+    case CurVal
         of equivalence(!Key) then {Dictionary.put Store Key Val}
         else raise incompatibleAssign(Key Val) end
     end
