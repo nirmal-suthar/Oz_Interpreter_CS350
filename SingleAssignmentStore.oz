@@ -1,5 +1,15 @@
-declare Store
+declare Store, Index
 Store = {Dictionary.new}
+Index = {NewCell 0}
+
+%==================
+% Add new Key in Store
+%=================
+fun {AddKeyToSAS}
+    {Cell.assign Index (@Index+1)}
+    {Dictionary.put Store @Index equivalence(@Index)}
+    @Index
+end
 
 %==================
 % Retrieves Value from the key
@@ -9,7 +19,7 @@ Store = {Dictionary.new}
 fun {RetrieveFromSAS Key}
     Val = {Dictionary.get Store Key} in
     case Val
-        of equivalence(_) then Val
+        of equivalence(!Key) then Val
         [] ref(X) then {RetrieveFromSAS X}
         else Val
     end
@@ -22,7 +32,7 @@ end
 fun {BindRefToKeyInSAS Key RefKey}
     Val = {Dictionary.get Store Key} in 
     case Val
-        of equivalence(_) then {Dictionary.put Store Key ref(RefKey)}
+        of equivalence(!Key) then {Dictionary.put Store Key ref(RefKey)}
         else raise incompatibleAssign(Key Val) end
     end
 end
@@ -34,7 +44,7 @@ end
 fun {BindValueToKeyInSAS Key Val}
     Val = {Dictionary.get Store Key} in 
     case Val
-        of equivalence(_) then {Dictionary.put Store Key Val}
+        of equivalence(!Key) then {Dictionary.put Store Key Val}
         else raise incompatibleAssign(Key Val) end
     end
 end
