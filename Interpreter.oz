@@ -1,5 +1,3 @@
-declare Program SemanticStack Environment Execute ExecutionState SAS
-
 proc {Execute ExecStack} 
     case ExecStack of nil then skip
     [] es(st: SemStack sas: XSAS) then
@@ -23,11 +21,3 @@ proc {Execute ExecStack}
     else {Browse 'Error: ExecStack invalid'} skip
     end
 end
-
-Program = [[nop] [nop] [nop] [nop]] %statement in kernel language
-Environment = '#' %set of mappings {X=<x>, Y=<y>}
-%ss: semantic statement, s: statement in kernel lang, env: environment
-SAS = '#'
-SemanticStack = [ss(s:Program env:Environment)] % stack of ss(s: env: )
-ExecutionState = es(st: SemanticStack sas: SAS) %es(st: sas: )
-{Execute ExecutionState}
