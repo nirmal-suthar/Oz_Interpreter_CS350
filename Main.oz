@@ -4,7 +4,7 @@ declare Program SemanticStack Environment Execute ExecutionState SAS
 \insert 'Tests.oz'
 
 Program = [[nop] [nop] [nop] [nop]] %statement in kernel language
-Environment = '#' %set of mappings {X=<x>, Y=<y>}
+Environment = env() %set of mappings {X=<x>, Y=<y>}
 %ss: semantic statement, s: statement in kernel lang, env: environment
 SAS = '#'
 SemanticStack = [ss(s:Program env:Environment)] % stack of ss(s: env: )

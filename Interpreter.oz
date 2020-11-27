@@ -17,10 +17,6 @@ proc {Execute SemStack SAS}
             [] [nop] then 
                 {Browse 'skip statement'} 
                 {Execute RemSemStack SAS}
-            % part 1.2
-            [] S1|S2 then 
-                % {Browse S1} 
-                {Execute ss(s:S1 env:Env)|ss(s:S2 env:Env)|RemSemStack SAS}
             % part 2
             [] [var ident(X) S] then 
                 Key = {AddKeyToSAS} in
@@ -35,6 +31,10 @@ proc {Execute SemStack SAS}
                 % FIXME: do we require to init new store for <v> ?? 
                 {Unify ident(x) literal(n) Env}
                 {Execute RemSemStack SAS}
+            % part 1.2
+            [] S1|S2 then 
+                % {Browse S1} 
+                {Execute ss(s:S1 env:Env)|ss(s:S2 env:Env)|RemSemStack SAS}
             else {Browse 'Error: Statement invalid'} skip
             end
         else {Browse 'Error: TopSemStack invalid'} skip
