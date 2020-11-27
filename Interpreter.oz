@@ -1,3 +1,4 @@
+\insert 'Unify.oz'
 %==================
 % Takes the AST as input, and output the 
 % sequence of execution states during the 
@@ -21,7 +22,7 @@ proc {Execute SemStack SAS}
                 % {Browse S1} 
                 {Execute ss(s:S1 env:Env)|ss(s:S2 env:Env)|RemSemStack SAS}
             % part 2
-            [] [var ident(x) S] then 
+            [] [var ident(X) S] then 
                 Key = {AddKeyToSAS} in
                 {Browse "Variable creation"}
                 {Execute ss(s: S env: {AdjoinAt Env X Key})|RemSemStack SAS}

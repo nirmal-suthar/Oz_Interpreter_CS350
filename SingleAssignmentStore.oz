@@ -7,6 +7,7 @@ Index = {NewCell 0}
 %==================
 % Add new Key in Store
 %=================
+declare
 fun {AddKeyToSAS}
     Index := @Index + 1
     {Dictionary.put Store @Index equivalence(@Index)}
@@ -18,6 +19,7 @@ end
 % (1) retrieves recusively if Value is [ref]
 % (2) returns Value if it is [determined/equivalence]
 %=================
+declare
 fun {RetrieveFromSAS Key}
     Val = {Dictionary.get Store Key} in
     case Val
@@ -31,6 +33,7 @@ end
 % Binds Ref to the key in Store after checking
 % (1) Value corresponding to Key is [equivalence]
 %=================
+declare
 fun {BindRefToKeyInSAS Key RefKey}
     Val = {Dictionary.get Store Key} in 
     case Val
@@ -43,6 +46,7 @@ end
 % Binds Value to the key in Store after checking
 % (1) Value corresponding to Key is [equivalence]
 %=================
+declare
 fun {BindValueToKeyInSAS Key Val}
     CurVal = {Dictionary.get Store Key} in 
     case CurVal

@@ -1,6 +1,6 @@
 declare Program SemanticStack Environment Execute ExecutionState SAS
 
-\insert 'Main.oz'
+\insert 'Interpreter.oz'
 \insert 'Tests.oz'
 
 Program = [[nop] [nop] [nop] [nop]] %statement in kernel language
@@ -11,7 +11,7 @@ SemanticStack = [ss(s:Program env:Environment)] % stack of ss(s: env: )
 ExecutionState = es(st: SemanticStack sas: SAS) %es(st: sas: )
 
 % driver to call tests defined in Tests.oz
-{TestCases}
+% {TestCases}
 
 % Call Interpreter
-{Execute ExecutionState}
+{Execute SemanticStack Store}
