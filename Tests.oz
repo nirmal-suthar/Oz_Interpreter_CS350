@@ -53,11 +53,52 @@ proc {TestCases}
     %     {PrintAll}
     % end
 
+    % local Program Environment SemanticStack in
+    %     {Browse 'Test 6: Variable to Literal + Value Binding'}
+    %     Program = [var ident(x) 
+    %                 [var ident(y) 
+    %                     [[bind ident(x) ident(y)] [bind ident(x) literal(5)]] ]]
+    %     Environment = env()
+    %     SemanticStack = [ss(s:Program env:Environment)]
+
+    %     {Execute SemanticStack Store}
+    %     {PrintAll}
+    % end
+    % local Program Environment SemanticStack in
+    %     {Browse 'Test 7: Variable to Record Binding'}
+    %     Program = [var ident(z) [var ident(y) [var ident(x) 
+    %                 [bind ident(x) [record literal(2) [
+    %                     [literal(1) ident(y)]
+    %                     [literal(2) ident(z)]
+    %                 ]]]]]]
+    %     Environment = env()
+    %     SemanticStack = [ss(s:Program env:Environment)]
+
+    %     {Execute SemanticStack Store}
+    %     {PrintAll}
+    % end
     local Program Environment SemanticStack in
-        {Browse 'Test 6: Variable to Literal + Value Binding'}
-        Program = [var ident(x) 
+        {Browse 'Test 8: Pattern match'}
+        Program = [var ident(z) 
                     [var ident(y) 
-                        [[bind ident(x) ident(y)] [bind ident(x) literal(5)]] ]]
+                        [var ident(x) 
+                            [
+                                [bind ident(x) 
+                                    [record literal(2) [
+                                        [literal(1) ident(y)]
+                                        [literal(2) ident(z)]
+                                    ]]
+                                ]
+                                [match ident(x) 
+                                    [record literal(2) [
+                                        [literal(1) ident(a)]
+                                        [literal(2) ident(b)]
+                                    ]] [nop] [nop]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
         Environment = env()
         SemanticStack = [ss(s:Program env:Environment)]
 
@@ -65,12 +106,82 @@ proc {TestCases}
         {PrintAll}
     end
     local Program Environment SemanticStack in
-        {Browse 'Test 7: Variable to Record Binding'}
-        Program = [var ident(z) [var ident(y) [var ident(x) 
-                    [bind ident(x) [record literal(2) [
-                        [literal(1) ident(y)]
-                        [literal(2) ident(z)]
-                    ]]]]]]
+        {Browse 'Test 9: Pattern not match1'}
+        Program = [var ident(z) 
+                    [var ident(y) 
+                        [var ident(x) 
+                            [
+                                [bind ident(x) 
+                                    [record literal(2) [
+                                        [literal(1) ident(y)]
+                                        [literal(2) ident(z)]
+                                    ]]
+                                ]
+                                [match ident(x) 
+                                    [record literal(2) [
+                                        [literal(5) ident(a)]
+                                        [literal(2) ident(b)]
+                                    ]] [nop] [nop]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+        Environment = env()
+        SemanticStack = [ss(s:Program env:Environment)]
+
+        {Execute SemanticStack Store}
+        {PrintAll}
+    end
+    local Program Environment SemanticStack in
+        {Browse 'Test 10: Pattern not match2'}
+        Program = [var ident(z) 
+                    [var ident(y) 
+                        [var ident(x) 
+                            [
+                                [bind ident(x) 
+                                    [record literal(2) [
+                                        [literal(1) ident(y)]
+                                        [literal(2) ident(z)]
+                                    ]]
+                                ]
+                                [match ident(x) 
+                                    [record literal(10) [
+                                        [literal(1) ident(a)]
+                                        [literal(2) ident(b)]
+                                    ]] [nop] [nop]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+        Environment = env()
+        SemanticStack = [ss(s:Program env:Environment)]
+
+        {Execute SemanticStack Store}
+        {PrintAll}
+    end
+     local Program Environment SemanticStack in
+        {Browse 'Test 11: Pattern not match3'}
+        Program = [var ident(z) 
+                    [var ident(y) 
+                        [var ident(x) 
+                            [
+                                [bind ident(x) 
+                                    [record literal(2) [
+                                        [literal(1) ident(y)]
+                                        [literal(2) ident(z)]
+                                    ]]
+                                ]
+                                [match ident(x) 
+                                    [record literal(10) [
+                                        [literal(1) ident(a)]
+                                    ]] [nop] [nop]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
         Environment = env()
         SemanticStack = [ss(s:Program env:Environment)]
 

@@ -7,6 +7,7 @@
 % (1) SemStack - Semantic Stack
 % (2) SAS - Single assignment Store
 %=================
+
 proc {Execute SemStack SAS} 
     case SemStack of nil then skip
     [] TopSemStack|RemSemStack then
@@ -33,6 +34,48 @@ proc {Execute SemStack SAS}
                 {Unify ident(X) Xs Env}
                 {Browse 'Variable to Value Binding'}
                 {Execute RemSemStack SAS}
+            % part 5 Pattern match
+            [] [match ident(X) P S1 S2] then
+                local Rec T1 T2 NewEnv in
+                    Rec = {RetrieveFromSAS Env.X} 
+                    case Rec of nil then {Browse 'Error: match, ident(X) is nil'} skip
+                    [] record|XLabel|XFeaturePairs|nil then
+                        case P of nil then skip
+                        [] record|PLabel|PFeaturePairs|nil then
+                            T1 = {List.map PFeaturePairs fun {$ Pair} Pair.1 end}
+                            T2 = {List.map XFeaturePairs fun {$ Pair} Pair.1 end}
+                            if XLabel == PLabel andthen T1 == T2 then
+                            % Pattern match
+                            {Browse 'Pattern matched'}                      
+                            {AdjoinList Env %Create the new env
+                                {List.zip XFeaturePairs PFeaturePairs 
+                                    fun {$ XFeaturePair PFeaturePair}
+                                        % {Browse 'match new env binding pairs:'#XFeaturePair#PFeaturePair}
+                                        case PFeaturePair.2.1 of ident(Xp) then
+                                            case XFeaturePair.2.1 of equivalence(Xkey) 
+                                                then Xp#Xkey
+                                            [] reference(Xkey) 
+                                                then Xp#Xkey
+                                            else raise incompatibleTypes(PFeaturePair XFeaturePair) end
+                                            end
+                                        else raise incompatibleTypes(PFeaturePair XFeaturePair) end
+                                        end
+                                    end
+                                ?} 
+                            NewEnv}
+                            % {Browse 'Env:'#Env}
+                            % {Browse 'NewEnv:'#NewEnv}
+                            {Execute ss(s: S1 env: NewEnv)|RemSemStack SAS}
+                            else
+                            % Pattern did not match
+                            {Browse 'Pattern not matched'}
+                            {Execute ss(s: S2 env: Env)|RemSemStack SAS}
+                            end
+                        else {Browse 'Error: match, P is not a valid record'} skip
+                        end
+                    else {Browse 'Error: match, ident(X) is not a valid record'} skip
+                    end
+                end
             % part 1.2 Compound Statement
             [] S1|S2 then 
                 % {Browse S1} 

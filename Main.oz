@@ -1,4 +1,4 @@
-declare Program SemanticStack Environment Execute ExecutionState SAS
+declare Program SemanticStack Environment Execute ExecutionState SAS IsAritySame
 
 \insert 'Interpreter.oz'
 
