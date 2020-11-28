@@ -27,10 +27,10 @@ proc {Execute SemStack SAS}
                 {Unify ident(X) ident(Y) Env}
                 {Browse 'Variable to Variable Binding'}
                 {Execute RemSemStack SAS}
-            % part 4.1 Variable to Value Binding
-            [] [bind ident(X) literal(N)] then
+            % part 4.1+4.2 Variable to Value Binding
+            [] [bind ident(X) Xs] then
                 % FIXME: do we require to init new store for <v> ?? 
-                {Unify ident(X) literal(N) Env}
+                {Unify ident(X) Xs Env}
                 {Browse 'Variable to Value Binding'}
                 {Execute RemSemStack SAS}
             % part 1.2 Compound Statement
