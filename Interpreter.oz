@@ -20,16 +20,16 @@ proc {Execute SemStack SAS}
             % part 2
             [] [var ident(X) S] then 
                 Key = {AddKeyToSAS} in
-                {Browse "Variable creation"}
+                {Browse 'Variable creation'}
                 {Execute ss(s: S env: {AdjoinAt Env X Key})|RemSemStack SAS}
             % part 3
-            [] [bind ident(x) ident(y)] then
-                {Unify ident(x) ident(y) Env}
+            [] [bind ident(X) ident(Y)] then
+                {Unify ident(X) ident(Y) Env}
                 {Execute RemSemStack SAS}
             % part 4.1
-            [] [bind ident(x) literal(n)] then
+            [] [bind ident(X) literal(N)] then
                 % FIXME: do we require to init new store for <v> ?? 
-                {Unify ident(x) literal(n) Env}
+                {Unify ident(X) literal(N) Env}
                 {Execute RemSemStack SAS}
             % part 1.2
             [] S1|S2 then 
