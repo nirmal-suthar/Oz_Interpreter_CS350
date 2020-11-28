@@ -48,3 +48,9 @@ proc {BindValueToKeyInSAS Key Val}
         else raise incompatibleAssign(Key Val) end
     end
 end
+
+proc {PrintAll}
+    {Browse 'Printing Single Assigment Store:'}
+    {Browse {Dictionary.entries Store}} 
+    {Browse 'Done Printing Single Assigment Store'}
+end

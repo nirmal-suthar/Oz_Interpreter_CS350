@@ -13,25 +13,27 @@ proc {Execute SemStack SAS}
         case TopSemStack of nil then skip
         [] ss(s: Statement env: Env) then 
             case Statement of nil then skip
-            % part 1.1 
+            % part 1.1 Skip 
             [] [nop] then 
                 {Browse 'skip statement'} 
                 {Execute RemSemStack SAS}
-            % part 2
+            % part 2 Variable Creation
             [] [var ident(X) S] then 
                 Key = {AddKeyToSAS} in
                 {Browse 'Variable creation'}
                 {Execute ss(s: S env: {AdjoinAt Env X Key})|RemSemStack SAS}
-            % part 3
+            % part 3 Variable to Variable Binding
             [] [bind ident(X) ident(Y)] then
                 {Unify ident(X) ident(Y) Env}
+                {Browse 'Variable to Variable Binding'}
                 {Execute RemSemStack SAS}
-            % part 4.1
+            % part 4.1 Variable to Value Binding
             [] [bind ident(X) literal(N)] then
                 % FIXME: do we require to init new store for <v> ?? 
                 {Unify ident(X) literal(N) Env}
+                {Browse 'Variable to Value Binding'}
                 {Execute RemSemStack SAS}
-            % part 1.2
+            % part 1.2 Compound Statement
             [] S1|S2 then 
                 % {Browse S1} 
                 {Execute ss(s:S1 env:Env)|ss(s:S2 env:Env)|RemSemStack SAS}
