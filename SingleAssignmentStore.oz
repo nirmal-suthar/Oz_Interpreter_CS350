@@ -49,6 +49,15 @@ proc {BindValueToKeyInSAS Key Val}
     end
 end
 
+
+fun {UnionList X Y}
+    case X
+    of nil then Y
+    [] H|T then H|{Filter {UnionList T Y} fun{$ A} A \= H end}
+    end
+end
+
+
 proc {PrintAll}
     {Browse 'Printing Single Assigment Store:'}
     {Browse {Dictionary.entries Store}} 

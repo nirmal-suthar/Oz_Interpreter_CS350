@@ -1,4 +1,19 @@
 \insert 'Unify.oz'
+
+fun {FV S}
+    case S
+    of [nop] then nil
+    [] [var ident(X) S2] then {Filter {FV S2} fun{$ A} A \= X end}
+    [] [bind ident(X) ident(Y)] then [X Y]
+    [] [bind ident(X) V] then {UnionList [X] {FV V}}
+    [] [match ident(X) P S1 S2] then local FVP = {FV P} in {UnionList [X] {UnionList {FV S2} {Filter {FV S1} fun{$ A} {Member A FVP}==false end}}} end
+    [] [record L Pairs] then {Map Pairs fun{$ [literal(A) ident(B)]} B end}
+    [] [procedure Args S] then {Filter {FV S} fun{$ A} {Member ident(A) Args}==false end}
+    [] S1|S2 then {UnionList {FV S1} {FV S2}}
+    else nil
+    end
+end
+
 %==================
 % Takes the AST as input, and output the 
 % sequence of execution states during the 
@@ -28,12 +43,19 @@ proc {Execute SemStack SAS}
                 {Unify ident(X) ident(Y) Env}
                 {Browse 'Variable to Variable Binding'}
                 {Execute RemSemStack SAS}
-            % part 4.1+4.2 Variable to Value Binding
+            % part 4.1+4.2+4.3 Variable to Value Binding
             [] [bind ident(X) Xs] then
-                % FIXME: do we require to init new store for <v> ?? 
-                {Unify ident(X) Xs Env}
-                {Browse 'Variable to Value Binding'}
-                {Execute RemSemStack SAS}
+                case Xs
+                of [procedure Args S] then 
+                    {Unify ident(X) procedure(definition: Xs closure: {FoldR {FV Xs} fun{$ A B} {AdjoinAt B A Env.A} end c()}) Env}
+                    {Browse 'Variable to procedure Binding'}
+                    {Execute RemSemStack SAS}
+                else
+                    % FIXME: do we require to init new store for <v> ?? 
+                    {Unify ident(X) Xs Env}
+                    {Browse 'Variable to Value Binding'}
+                    {Execute RemSemStack SAS}
+                end
             % part 5 Pattern match
             [] [match ident(X) P S1 S2] then
                 local Rec T1 T2 NewEnv in
