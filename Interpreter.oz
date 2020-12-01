@@ -75,7 +75,7 @@ proc {Execute SemStack SAS}
                                         case PFeaturePair.2.1 of ident(Xp) then
                                             case XFeaturePair.2.1 of equivalence(Xkey)
                                                 then Xp#Xkey
-                                            [] reference(Xkey) 
+                                            [] ref(Xkey)
                                                 then Xp#Xkey
                                             else raise incompatibleTypes(PFeaturePair XFeaturePair) end
                                             end
@@ -128,8 +128,11 @@ proc {Execute SemStack SAS}
                 end
             % part 1.2 Compound Statement
             [] S1|S2 then
+                if S2 \= nil then
                 % {Browse S1}
                 {Execute ss(s:S1 env:Env)|ss(s:S2 env:Env)|RemSemStack SAS}
+                else {Execute ss(s:S1 env:Env)|RemSemStack SAS}
+                end
             else {Browse 'Error: Statement invalid'} skip
             end
         else {Browse 'Error: TopSemStack invalid'} skip
