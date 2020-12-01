@@ -5,7 +5,7 @@
 % Date  : Fri Sep 28 18:34:06 2012
 %==============
 
-declare
+% declare
 %==========
 % Check if the entries in a *sorted* list
 % are unique.
@@ -21,7 +21,7 @@ fun {HasUniqueEntries L}
    end
 end
 
-declare
+% declare
 %===========================
 % equals Value.'<' if A and B are of the same type.
 % Otherwise, any number is treated less than any literal.
@@ -47,7 +47,7 @@ end
 %=====================
    
 
-declare
+% declare
 %==================
 % The list of fieldname#value pairs can be specified in any
 % order. The function returns a list of pairs sorted in the "arity"

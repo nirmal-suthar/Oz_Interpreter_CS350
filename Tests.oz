@@ -1,3 +1,9 @@
+declare 
+Unify % Unification
+Store Index % Store varible
+RetrieveFromSAS BindValueToKeyInSAS BindRefToKeyInSAS % SAS function
+HasUniqueEntries MixedCompare Canonize % record function
+
 \insert 'Interpreter.oz'
 
 proc {TestCases}

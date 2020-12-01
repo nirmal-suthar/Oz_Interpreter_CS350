@@ -1,4 +1,4 @@
-declare Store Index RetrieveFromSAS BindValueToKeyInSAS BindRefToKeyInSAS
+% declare Store Index RetrieveFromSAS BindValueToKeyInSAS BindRefToKeyInSAS
 Store = {Dictionary.new}
 Index = {NewCell 0}
 

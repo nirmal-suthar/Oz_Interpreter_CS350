@@ -17,7 +17,7 @@
 \insert 'SingleAssignmentStore.oz'
 \insert 'ProcessRecords.oz'
 
-declare
+% declare
 proc {Unify Exp1 Exp2 Env}
    SubstituteIdentifiers
    WeakSubstitute
