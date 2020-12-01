@@ -8,7 +8,8 @@
 
 ## Description of files
 
-- Main.oz - Top level file to run the interpreter
+- Main.oz - [Live mode] Top level file to run the interpreter
+- Main2.oz - [Compile mode] Top level file to run the interpreter
 - Interpreter.oz - Interpreter for Abstract Syntax Tree as input
 - SingleAssignmentStore.oz - Implementation of Single Assignment Store
 - Test.oz - Custom Test cases.
@@ -17,4 +18,15 @@
 
 ## Usage example
 
-To be continued..
+
+
+### Oz Interpreter [Main.oz]
+
+    `ctrl+. ctrl+b` [feed file Main.oz]
+ 
+### Compiled Mode [Main2.oz]
+
+    - Compile
+        `ozc -c Main2.oz -o Interpreter`
+    - Execute
+        `ozengine Interpreter`
