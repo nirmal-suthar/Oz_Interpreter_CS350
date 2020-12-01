@@ -15,26 +15,26 @@ fun {FV S}
 end
 
 %==================
-% Takes the AST as input, and output the 
-% sequence of execution states during the 
+% Takes the AST as input, and output the
+% sequence of execution states during the
 % execution of the statement.
 % The argument to Execute are,
 % (1) SemStack - Semantic Stack
 % (2) SAS - Single assignment Store
 %=================
 
-proc {Execute SemStack SAS} 
+proc {Execute SemStack SAS}
     case SemStack of nil then skip
     [] TopSemStack|RemSemStack then
         case TopSemStack of nil then skip
-        [] ss(s: Statement env: Env) then 
+        [] ss(s: Statement env: Env) then
             case Statement of nil then skip
-            % part 1.1 Skip 
-            [] [nop] then 
-                {Browse 'skip statement'} 
+            % part 1.1 Skip
+            [] [nop] then
+                {Browse 'skip statement'}
                 {Execute RemSemStack SAS}
             % part 2 Variable Creation
-            [] [var ident(X) S] then 
+            [] [var ident(X) S] then
                 Key = {AddKeyToSAS} in
                 {Browse 'Variable creation'}
                 {Execute ss(s: S env: {AdjoinAt Env X Key})|RemSemStack SAS}
@@ -46,12 +46,11 @@ proc {Execute SemStack SAS}
             % part 4.1+4.2+4.3 Variable to Value Binding
             [] [bind ident(X) Xs] then
                 case Xs
-                of [procedure Args S] then 
-                    {Unify ident(X) procedure(definition: Xs closure: {FoldR {FV Xs} fun{$ A B} {AdjoinAt B A Env.A} end c()}) Env}
+                of [procedure Args S] then
+                    {Unify ident(X) procedure(definition: Xs closure: {FoldR {FV Xs} fun{$ A B} {AdjoinAt B A Env.A} end env()}) Env}
                     {Browse 'Variable to procedure Binding'}
                     {Execute RemSemStack SAS}
                 else
-                    % FIXME: do we require to init new store for <v> ?? 
                     {Unify ident(X) Xs Env}
                     {Browse 'Variable to Value Binding'}
                     {Execute RemSemStack SAS}
@@ -59,7 +58,7 @@ proc {Execute SemStack SAS}
             % part 5 Pattern match
             [] [match ident(X) P S1 S2] then
                 local Rec T1 T2 NewEnv in
-                    Rec = {RetrieveFromSAS Env.X} 
+                    Rec = {RetrieveFromSAS Env.X}
                     case Rec of nil then {Browse 'Error: match, ident(X) is nil'} skip
                     [] record|XLabel|XFeaturePairs|nil then
                         case P of nil then skip
@@ -68,13 +67,13 @@ proc {Execute SemStack SAS}
                             T2 = {List.map XFeaturePairs fun {$ Pair} Pair.1 end}
                             if XLabel == PLabel andthen T1 == T2 then
                             % Pattern match
-                            {Browse 'Pattern matched'}                      
+                            {Browse 'Pattern matched'}
                             {AdjoinList Env %Create the new env
-                                {List.zip XFeaturePairs PFeaturePairs 
+                                {List.zip XFeaturePairs PFeaturePairs
                                     fun {$ XFeaturePair PFeaturePair}
                                         % {Browse 'match new env binding pairs:'#XFeaturePair#PFeaturePair}
                                         case PFeaturePair.2.1 of ident(Xp) then
-                                            case XFeaturePair.2.1 of equivalence(Xkey) 
+                                            case XFeaturePair.2.1 of equivalence(Xkey)
                                                 then Xp#Xkey
                                             [] reference(Xkey) 
                                                 then Xp#Xkey
@@ -83,7 +82,7 @@ proc {Execute SemStack SAS}
                                         else raise incompatibleTypes(PFeaturePair XFeaturePair) end
                                         end
                                     end
-                                ?} 
+                                ?}
                             NewEnv}
                             % {Browse 'Env:'#Env}
                             % {Browse 'NewEnv:'#NewEnv}
@@ -98,9 +97,38 @@ proc {Execute SemStack SAS}
                     else {Browse 'Error: match, ident(X) is not a valid record'} skip
                     end
                 end
+            % part 6 procedure application
+            [] apply | ident(F) | Xs then
+                NewEnv
+                Func = {RetrieveFromSAS Env.F} in
+                case Func of nil then {Browse 'Error apply: ident(F) is nil'}
+                [] procedure(definition:[procedure Args S] closure:CE) then
+                    if {List.length Args} == {List.length Xs} then
+                        NewEnv = {List.zip Args Xs
+                        fun{$ A B}
+                            case B of ident(X) then
+                                case A of ident(Y) then
+                                    case Env.X
+                                    of nil then raise incompatibleMapping(ident(X)) end
+                                    else Y#(Env.X)
+                                    end
+                                else raise incompatibleTypes(A) end
+                                end
+                            else raise incompatibleTypes(B) end
+                            end
+                        end
+                        }
+                        {Browse 'Procedure applied'}
+                        {Execute ss(s: S env:{AdjoinList CE NewEnv})|RemSemStack SAS}
+                    else
+                        {Browse 'Error: apply, arity of F did not match'}
+                    end
+                else
+                {Browse 'Error: apply, ident(F) id not a valid procedure'}
+                end
             % part 1.2 Compound Statement
-            [] S1|S2 then 
-                % {Browse S1} 
+            [] S1|S2 then
+                % {Browse S1}
                 {Execute ss(s:S1 env:Env)|ss(s:S2 env:Env)|RemSemStack SAS}
             else {Browse 'Error: Statement invalid'} skip
             end
@@ -109,30 +137,3 @@ proc {Execute SemStack SAS}
     else {Browse 'Error: SemStack invalid'} skip
     end
 end
-
-% proc {Execute ExecStack} 
-%     case ExecStack of nil then skip
-%     [] es(st: SemStack sas: XSAS) then
-%         case SemStack of nil then skip
-%         [] TopSemStack|RemSemStack then
-%             case TopSemStack of nil then skip
-%             [] ss(s: Statement env: Env) then 
-%                 case Statement of nil then skip
-%                 [] [nop] then 
-%                     {Browse 'skip statement'} 
-%                     {Execute es(st: RemSemStack sas:XSAS)}
-%                 [] [var ident(X) S] then Key = {AddKeyToSAS} in
-%                     {Browse "Variable creation"}
-%                     {Execute es(st: ss(s: S env: {AdjoinAt Env X Key})|RemSemStack sas:XSAS)}
-%                 [] S1|S2 then 
-%                     % {Browse S1} 
-%                     {Execute es(st: ss(s:S1 env:Env)|ss(s:S2 env:Env)|RemSemStack sas:XSAS)}
-%                 else {Browse 'Error: Statement invalid'} skip
-%                 end
-%             else {Browse 'Error: TopSemStack invalid'} skip
-%             end
-%         else {Browse 'Error: SemStack invalid'} skip
-%         end
-%     else {Browse 'Error: ExecStack invalid'} skip
-%     end
-% end
